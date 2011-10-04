@@ -97,9 +97,24 @@ void Perlin3D::writePGMImage(std::string filename, int tranche){
         img.close();
 }
 
+void Perlin3D::writePBRTFile(std::string filename){
+    std::ofstream pbrt(filename.c_str());
+    pbrt << "Volume \"volumegrid\" \"integer nx\" " << m_sizeX << " \"integer ny\" " << m_sizeY << " \" integer nz\" " << m_sizeZ << std::endl;
+    pbrt << "\"point p0\" [ 0 0 0 ] \" point p1\" [ 1 1 1 ]" << std::endl;
+    pbrt << "\"float density\" [" << std::endl;
 
-
-
+    for (int k = 0; k < m_sizeZ; ++k){
+        int init = k * m_sizeX * m_sizeY;
+        int end = init + m_sizeX * m_sizeY;
+        for (int i = init; i < end; i+=1){
+            pbrt << m_perlin[i]<< " ";
+            if (i % m_sizeX == 0)
+                pbrt << std::endl;
+        }
+    }
+    pbrt << "]"<< std::endl;
+    pbrt.close();
+}
 
 
 

@@ -3,7 +3,7 @@
 #include <sstream>
 
 int main(){
-    Perlin3D p(512, 512, 10, 128, 8, 0.5);
+    Perlin3D p(100, 100, 100, 128, 8, 0.5);
     std::cout << "ecriture" << std::endl;
     for (int i =  0; i < 10; ++i){
         std::string filename;
@@ -14,6 +14,8 @@ int main(){
 
         p.writePGMImage(filename.c_str(), i);
     }
+
+    p.writePBRTFile("smoke.pbrt");
 
 
 return 0;

@@ -37,7 +37,7 @@ public:
     double noise(int i, int j, int k);
     double getPerlin(int x, int y, int z);
     void writePGMImage(std::string filename, int tranche = 0);
-
+    void writePBRTFile(std::string filename);
 
 
 };
