@@ -17,10 +17,11 @@ Perlin2D::~Perlin2D(){
 
 void Perlin2D::init_noise(){
 
-    m_sizeXMax = (int) ceil(m_sizeX * pow(2, m_nbOctave  - 1)  / m_step);
-    m_sizeYMax = (int) ceil(m_sizeY * pow(2, m_nbOctave  - 1)  / m_step);
+    m_sizeXMax = (int) ceil((m_sizeX+1) * pow(2, m_nbOctave  - 1)  / m_step);
+    m_sizeYMax = (int) ceil((m_sizeY+1) * pow(2, m_nbOctave  - 1)  / m_step);
 
     m_noise.clear();
+    srand(time(NULL));
 
     for (int i = 0; i < m_nbOctave; ++i){
         for (int j = 0; j < m_sizeXMax * m_sizeYMax; ++j){
@@ -66,8 +67,6 @@ double Perlin2D::interpolation_cos1D(double a, double b, double x) {
 }
 
 
-
-
 void Perlin2D::init_perlin(){
     for (int i = 0; i < m_sizeX; ++i)
         for (int j = 0; j < m_sizeY; ++j)
@@ -77,8 +76,9 @@ void Perlin2D::init_perlin(){
 void Perlin2D::writePGMImage(std::string filename){
     std::ofstream img(filename.c_str());
     img << "P2 \n " << m_sizeX << " " << m_sizeY << " 255 \n";
-        for (int i = 0; i < m_sizeY * m_sizeX; ++i)
-            img << m_perlin[i] << " ";
+        for (int i = 0; i < m_sizeY * m_sizeX; ++i){
+            img << (int) (m_perlin[i] * 255)<< " ";
+       }
 
         img.close();
 }
