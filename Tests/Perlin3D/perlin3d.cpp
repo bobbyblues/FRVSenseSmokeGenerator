@@ -33,7 +33,7 @@ void Perlin3D::init_noise(){
 }
 
 double Perlin3D::noise(int i, int j, int k){
-    return m_noise[i * m_sizeXMax + j +  k * (m_sizeXMax * m_sizeYMax)];
+    return m_noise[k * m_sizeXMax * m_sizeYMax + j * m_sizeXMax + i];
 }
 
 double Perlin3D::getPerlin(int x, int y, int z){
@@ -79,20 +79,20 @@ double Perlin3D::interpolation_cos1D(double a, double b, double x) {
 
 
 void Perlin3D::init_perlin(){
-    for (int i = 0; i < m_sizeX; ++i)
-        for (int j = 0; j < m_sizeY; ++j)
-            for (int k = 0; k < m_sizeZ; ++k)
+    for (int k = 0; k < m_sizeZ; ++k)
+        for (int i = 0; i < m_sizeX; ++i)
+            for (int j = 0; j < m_sizeY; ++j)
                 m_perlin.push_back(getPerlin(i, j, k));
 }
 
-void Perlin3D::writePGMImage(std::string filename){
+void Perlin3D::writePGMImage(std::string filename, int tranche){
     std::ofstream img(filename.c_str());
     img << "P2 \n " << m_sizeX << " " << m_sizeY << " 255 \n";
-        for (int i = 0; i < m_sizeY * m_sizeX; i+=m_sizeZ){
-            img << m_perlin[i] * 255<< " ";
-            if (m_perlin[i] > 1)
-                std::cout << "ahhh " << m_perlin[i] << std::endl;
-       }
+    int init = tranche * m_sizeX * m_sizeY;
+    int end = init + m_sizeX * m_sizeY;
+    for (int i = init; i < end; i+=1){
+        img << (int)(m_perlin[i] * 255)<< " ";
+    }
 
         img.close();
 }
