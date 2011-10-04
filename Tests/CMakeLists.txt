@@ -1,1 +1,3 @@
-SUBDIRS(CudaC3)
+SUBDIRS(CudaC3
+	Perlin2D
+)
