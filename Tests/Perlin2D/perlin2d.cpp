@@ -1,5 +1,12 @@
 #include "perlin2d.h"
 
+#include <stdlib.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
+#include <fstream>
+#include <iostream>
+#include <ctime>
+
 Perlin2D::Perlin2D(int sizeX, int sizeY, float step, short nbOctave, float persistance):
     m_sizeX(sizeX),
     m_sizeY(sizeY),
@@ -17,11 +24,11 @@ Perlin2D::~Perlin2D(){
 
 void Perlin2D::init_noise(){
 
-    m_sizeXMax = (int) ceil((m_sizeX+1) * pow(2, m_nbOctave  - 1)  / m_step);
-    m_sizeYMax = (int) ceil((m_sizeY+1) * pow(2, m_nbOctave  - 1)  / m_step);
+    m_sizeXMax = (int) ceil((m_sizeX+1) * pow(2.0f, m_nbOctave  - 1)  / m_step);
+    m_sizeYMax = (int) ceil((m_sizeY+1) * pow(2.0f, m_nbOctave  - 1)  / m_step);
 
     m_noise.clear();
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
 
     for (int i = 0; i < m_nbOctave; ++i){
         for (int j = 0; j < m_sizeXMax * m_sizeYMax; ++j){

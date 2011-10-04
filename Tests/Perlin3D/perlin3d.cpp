@@ -1,5 +1,12 @@
 #include "perlin3d.h"
 
+#include <stdlib.h>
+#define _USE_MATH_DEFINES
+#include <math.h>
+#include <fstream>
+#include <iostream>
+#include <ctime>
+
 Perlin3D::Perlin3D(int sizeX, int sizeY, int sizeZ, float step, short nbOctave, float persistance):
     m_sizeX(sizeX),
     m_sizeY(sizeY),
@@ -18,12 +25,12 @@ Perlin3D::~Perlin3D(){
 
 void Perlin3D::init_noise(){
 
-    m_sizeXMax = (int) ceil(m_sizeX * pow(2, m_nbOctave - 1) / m_step);
-    m_sizeYMax = (int) ceil(m_sizeY * pow(2, m_nbOctave - 1) / m_step);
-    m_sizeZMax = (int) ceil(m_sizeZ * pow(2, m_nbOctave - 1) / m_step);
+    m_sizeXMax = (int) ceil(m_sizeX * pow(2.0f, m_nbOctave - 1) / m_step);
+    m_sizeYMax = (int) ceil(m_sizeY * pow(2.0f, m_nbOctave - 1) / m_step);
+    m_sizeZMax = (int) ceil(m_sizeZ * pow(2.0f, m_nbOctave - 1) / m_step);
 
     m_noise.clear();
-    srand(time(NULL));
+    srand((unsigned int)time(NULL));
 
     for (int i = 0; i < m_nbOctave; ++i){
         for (int j = 0; j < m_sizeXMax * m_sizeYMax * m_sizeZMax; ++j){

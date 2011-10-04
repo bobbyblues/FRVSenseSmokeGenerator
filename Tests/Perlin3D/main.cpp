@@ -1,4 +1,6 @@
 #include "perlin3d.h"
+
+#include <iostream>
 #include <fstream>
 #include <sstream>
 

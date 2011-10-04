@@ -4,10 +4,6 @@
 
 #include <vector>
 #include <string>
-#include <stdlib.h>
-#include <math.h>
-#include <fstream>
-#include <iostream>
 
 class Perlin3D
 {
