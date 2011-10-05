@@ -14,7 +14,7 @@ ELSE(OPENGL_FOUND)
   MESSAGE(FATAL_ERROR "You must install OpenGL")
 ENDIF(OPENGL_FOUND)
 
-find_package(CUDA REQUIRED)
+find_package(CUDA)
 find_package(GLEW REQUIRED)
 
 # ---------------
