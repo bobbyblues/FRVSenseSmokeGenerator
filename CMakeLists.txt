@@ -15,6 +15,7 @@ ELSE(OPENGL_FOUND)
 ENDIF(OPENGL_FOUND)
 
 find_package(CUDA REQUIRED)
+find_package(GLEW REQUIRED)
 
 # ---------------
 SUBDIRS(Tests
