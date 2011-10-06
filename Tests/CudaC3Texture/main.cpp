@@ -15,9 +15,6 @@ int main()
 	int width = 800;
 	int height = 600;
 
-	int mesh_width = 256;
-	int mesh_height = 256;
-
 	// Creation du device
 	cutilSafeCall( cudaGLSetGLDevice( cutGetMaxGflopsDeviceId() ) );
 
@@ -37,17 +34,18 @@ int main()
 	glViewport(0, 0, width, height);
 	glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    gluPerspective(60.0, (GLfloat)width / (GLfloat) height, 0.1, 10.0);
 
-	// VBO
-	// *** Create
-	GLuint vbo;
-	glGenBuffers(1, &vbo);
-	glBindBuffer(GL_ARRAY_BUFFER, vbo);
-	// *** Initialize
-	unsigned int size = mesh_width * mesh_height * 4 * sizeof(float);
-	glBufferData(GL_ARRAY_BUFFER, size, 0, GL_DYNAMIC_DRAW);
-	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	// Texture creation
+	// create texture for display
+    glGenTextures(1, &texid);
+    glBindTexture(GL_TEXTURE_2D, texid);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+    glBindTexture(GL_TEXTURE_2D, 0);
+
+
+
 	// *** Register in CUDA
 	cudaGraphicsResource *cuda_vbo_resource = NULL;
 	cutilSafeCall(cudaGraphicsGLRegisterBuffer(&cuda_vbo_resource, vbo, cudaGraphicsMapFlagsWriteDiscard));
