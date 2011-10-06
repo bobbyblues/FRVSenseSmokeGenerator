@@ -119,13 +119,13 @@ void PerlinGenerator::writePBRTFile(std::string filename){
 
     for (int k = 0; k < m_sizeZ; ++k){
         int init = k * m_sizeX * m_sizeY;
-        int end = init + m_sizeX * m_sizeY;
-        for (int i = init; i < end; i+=1){
-            pbrt << m_perlin[i]<< " ";
+        for (int i = 0; i < m_sizeX * m_sizeY; i+=1){
+            pbrt << m_perlin[init + i]<< " ";
             if (i % m_sizeX == 0)
                 pbrt << std::endl;
         }
     }
-    pbrt << "]"<< std::endl;
+    pbrt << "\n]"<< std::endl;
     pbrt.close();
+    std::cout << "done" << std::endl;
 }
