@@ -1,3 +1,5 @@
 Build
 *~
 Doc/html
+*.pro
+*.pro.user

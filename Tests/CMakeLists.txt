@@ -1,6 +1,7 @@
 SUBDIRS(
 	Perlin2D
 	Perlin3D
+	TestQt
 )
 
 IF(FOUND_CUDA)

@@ -16,6 +16,7 @@ ENDIF(OPENGL_FOUND)
 
 find_package(CUDA)
 find_package(GLEW REQUIRED)
+find_package(Qt4 REQUIRED QtCore QtGui)
 
 # ---------------
 SUBDIRS(Tests
