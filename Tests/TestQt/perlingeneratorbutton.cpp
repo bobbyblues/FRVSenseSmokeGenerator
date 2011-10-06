@@ -14,7 +14,7 @@ PerlinGenerator::PerlinGenerator(int sizeX, int sizeY, float step, int nbOctave,
     m_nbOctave(nbOctave),
     m_persistance(persistance)
 {
-
+	srand((unsigned int)time(NULL));
 }
 
 void PerlinGenerator::run(){
@@ -25,22 +25,29 @@ void PerlinGenerator::run(){
     m_sizeZMax = (int) ceil(m_sizeZ * pow(2.0f, m_nbOctave - 1) / m_step);
 
     m_noise.clear();
-    srand((unsigned int)time(NULL));
+	m_noise.reserve(m_sizeXMax*m_sizeYMax*m_sizeZMax);
 
-    for (int i = 0; i < m_nbOctave; ++i){
+	for (int i = 0; i < m_nbOctave; ++i){
         for (int j = 0; j < m_sizeXMax * m_sizeYMax * m_sizeZMax; ++j){
             m_noise.push_back((double)rand()/(double)RAND_MAX);
-            progressStatus((int)((float)(i * m_sizeXMax * m_sizeYMax * m_sizeZMax + j) / (float)(4 * m_nbOctave * m_sizeXMax * m_sizeYMax * m_sizeZMax) * 100.f));
         }
+		progressStatus(((float)i/ m_nbOctave)* 25);
     }
 
     m_perlin.clear();
-    for (int k = 0; k < m_sizeZ; ++k)
-        for (int i = 0; i < m_sizeX; ++i)
+	m_perlin.reserve(m_sizeXMax*m_sizeYMax*m_sizeZMax);
+	#pragma omp parallel for
+	int compteur = 0;
+	for (int k = 0; k < m_sizeZ; ++k){
+		for (int i = 0; i < m_sizeX; ++i){
             for (int j = 0; j < m_sizeY; ++j){
                 m_perlin.push_back(getPerlin(i, j, k));
-                progressStatus(25 + (int)((float)((k * m_sizeX * m_sizeY + i * m_sizeY + j)) * 3.f / (float)(m_sizeX * m_sizeY * m_sizeZ * 4) * 100.f));
             }
+		}
+		#pragma omp critical
+        compteur++;
+		progressStatus(25 + 75*((float)compteur/m_sizeZ));
+	}
 
 
     progressStatus(100);
