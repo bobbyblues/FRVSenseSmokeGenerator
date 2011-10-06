@@ -3,7 +3,7 @@ SUBDIRS(
 	Perlin3D
 )
 
-IF(FOUND_CUDA)
+IF(CUDA_FOUND)
 	SUBDIRS(Cuda
 		CudaC3
 		CudaC3Texture)

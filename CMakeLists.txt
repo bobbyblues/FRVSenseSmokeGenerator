@@ -10,11 +10,16 @@ MESSAGE("Dependancies search ... ")
 FIND_PACKAGE(OpenGL)
 IF(OPENGL_FOUND)
   MESSAGE(STATUS "Find OpenGL")
-ELSE(OPENGL_FOUND)
+ELSE()
   MESSAGE(FATAL_ERROR "You must install OpenGL")
-ENDIF(OPENGL_FOUND)
+ENDIF()
 
 find_package(CUDA)
+IF(CUDA_FOUND)
+	MESSAGE(STATUS "Find CUDA")
+ELSE()
+    MESSAGE(STATUS "NOT Find CUDA")
+ENDIF()
 find_package(GLEW REQUIRED)
 
 # ---------------

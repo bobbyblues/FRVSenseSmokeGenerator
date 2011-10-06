@@ -7,7 +7,7 @@
 
 // Pour lancer le kernel
 extern "C" 
-void runKernel(float4* pos, unsigned int mesh_width, unsigned int mesh_height, float time);
+void runKernel(uchar4* data, unsigned int width, unsigned int height, float time);
 
 
 int main()
@@ -37,6 +37,7 @@ int main()
 
 	// Texture creation
 	// create texture for display
+	GLuint texid;
     glGenTextures(1, &texid);
     glBindTexture(GL_TEXTURE_2D, texid);
     glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, NULL);
@@ -44,12 +45,17 @@ int main()
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
     glBindTexture(GL_TEXTURE_2D, 0);
 
-
-
-	// *** Register in CUDA
-	cudaGraphicsResource *cuda_vbo_resource = NULL;
-	cutilSafeCall(cudaGraphicsGLRegisterBuffer(&cuda_vbo_resource, vbo, cudaGraphicsMapFlagsWriteDiscard));
-
+	// PBO Creation
+	GLuint pbo;
+	// OpenGL
+	glGenBuffersARB(1, &pbo);
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo);
+    glBufferDataARB(GL_PIXEL_UNPACK_BUFFER_ARB, width*height*sizeof(uchar4), 0, GL_STREAM_DRAW_ARB);
+    glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
+	// Register
+	cudaGraphicsResource *cuda_pbo_resource = NULL;
+	cutilSafeCall(cudaGraphicsGLRegisterBuffer(&cuda_pbo_resource, pbo, 
+					       cudaGraphicsMapFlagsWriteDiscard));
 
 	float g_fAnim = 0.f;
 	int nbFrame = 0;
@@ -94,42 +100,45 @@ int main()
 
 		// Lancer le calcul CUDA
 		// *** map OpenGL buffer object for writing from CUDA
-		float4 *dptr;
-		cutilSafeCall(cudaGraphicsMapResources(1, &cuda_vbo_resource, 0));
+		uchar4 *d_pbo;
+		cutilSafeCall(cudaGraphicsMapResources(1, &cuda_pbo_resource, 0));
 		size_t num_bytes; 
-		cutilSafeCall(cudaGraphicsResourceGetMappedPointer((void **)&dptr, &num_bytes, cuda_vbo_resource));
-		// *** Run kernel
-		runKernel(dptr, mesh_width, mesh_height,g_fAnim);
+		cutilSafeCall(cudaGraphicsResourceGetMappedPointer((void **)&d_pbo, &num_bytes, cuda_pbo_resource));
+		// *** run kernel
+		runKernel(d_pbo, width, height,g_fAnim);
 		cutilSafeCall( cutilDeviceSynchronize() );
-		// *** Unmap
-		cutilSafeCall(cudaGraphicsUnmapResources(1, &cuda_vbo_resource, 0));
+		// *** unmap
+		cutilSafeCall(cudaGraphicsUnmapResources(1, &cuda_pbo_resource, 0));
 		
-		// OpenGL
-		// *** Make some transformation
-		glMatrixMode(GL_MODELVIEW);
-		glLoadIdentity();
-		glTranslatef(0.0, 0.0, -3.0);
-		glRotatef(0.0, 1.0, 0.0, 0.0);
-		glRotatef(0.0, 0.0, 1.0, 0.0);
-		// *** Render VBO
-		// --- Bind
-		glBindBuffer(GL_ARRAY_BUFFER, vbo);
-		glVertexPointer(4, GL_FLOAT, 0, 0);
-		// --- Draw
-		glEnableClientState(GL_VERTEX_ARRAY);
-		glColor3f(1.0, 0.0, 0.0);
-		glDrawArrays(GL_POINTS, 0, mesh_width * mesh_height);
-		glDisableClientState(GL_VERTEX_ARRAY);
+		// download image from PBO to OpenGL texture
+		glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo);
+		glBindTexture  (GL_TEXTURE_2D, texid);
+		glPixelStorei  (GL_UNPACK_ALIGNMENT, 1);
+		glTexSubImage2D(GL_TEXTURE_2D,
+			0, 0, 0, width, height, GL_BGRA, GL_UNSIGNED_BYTE, 0);
+		glEnable(GL_TEXTURE_2D);
+
+		// Render Tex with quad
+		glDisable(GL_DEPTH_TEST);
+		glBegin(GL_QUADS);
+		glTexCoord2f(0.0f          , (GLfloat)1.f);  glVertex2f(-1.0f, -1.0f);
+		glTexCoord2f((GLfloat)1.f, (GLfloat)1.f);  glVertex2f(1.0f, -1.0f);
+		glTexCoord2f((GLfloat)1.f, 0.0f           );  glVertex2f(1.0f, 1.0f);
+		glTexCoord2f(0.0f          , 0.0f           );  glVertex2f(-1.0f, 1.0f);
+		glEnd();
+		glDisable(GL_TEXTURE_2D);
+
+		glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, 0);
 
 		// Swap buffers
 		OpenGLWin.Display();
 	}
 
 	// Liberation des ressources
-	cudaGraphicsUnregisterResource(cuda_vbo_resource);
+	//cudaGraphicsUnregisterResource(cuda_vbo_resource);
 	
-	glBindBuffer(1, vbo);
-	glDeleteBuffers(1, &vbo);
+	//glBindBuffer(1, vbo);
+	//glDeleteBuffers(1, &vbo);
 
 	// Close device
 	cutilDeviceReset();
