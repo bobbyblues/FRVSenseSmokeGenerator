@@ -19,6 +19,7 @@ signals:
 public slots:
     void launchGeneration();
     void updateDisplay();
+    void exportPBRT();
 
 };
 
