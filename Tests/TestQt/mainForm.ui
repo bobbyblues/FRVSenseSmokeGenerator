@@ -202,6 +202,13 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="bExport">
+       <property name="text">
+        <string>Exporter en PBRT</string>
+       </property>
+      </widget>
+     </item>
     </layout>
    </widget>
   </widget>

@@ -7,6 +7,7 @@ mainWindow::mainWindow(QWidget *parent) :
     QObject::connect(ui.bGeneratePerlin, SIGNAL(clicked()), this, SLOT(launchGeneration()));
     QObject::connect(&m_perlin, SIGNAL(progressStatus(int)), ui.pbGeneration, SLOT(setValue(int)));
     QObject::connect(ui.hsSlideSelector, SIGNAL(valueChanged(int)), this, SLOT(updateDisplay()));
+    QObject::connect(ui.bExport, SIGNAL(clicked()), this, SLOT(exportPBRT()));
 }
 
 void mainWindow::launchGeneration(){
@@ -30,4 +31,8 @@ void mainWindow::launchGeneration(){
 void mainWindow::updateDisplay(){
     m_perlin.writePGMImage("temp.pgm",ui.hsSlideSelector->value());
     ui.lPreview->setPixmap(QPixmap("temp.pgm"));
+}
+
+void mainWindow::exportPBRT(){
+    m_perlin.writePBRTFile("smoke.pbrt");
 }
