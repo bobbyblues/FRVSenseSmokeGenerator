@@ -7,5 +7,7 @@ SUBDIRS(
 IF(CUDA_FOUND)
 	SUBDIRS(Cuda
 		CudaC3
-		CudaC3Texture)
+		CudaC3Texture
+		CudaVolumeRender
+	)
 ENDIF()
