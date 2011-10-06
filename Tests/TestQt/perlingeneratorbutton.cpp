@@ -26,7 +26,7 @@ void PerlinGenerator::run(){
 
     m_noise.clear();
 	m_noise.reserve(m_sizeXMax*m_sizeYMax*m_sizeZMax);
-
+	
 	for (int i = 0; i < m_nbOctave; ++i){
         for (int j = 0; j < m_sizeXMax * m_sizeYMax * m_sizeZMax; ++j){
             m_noise.push_back((double)rand()/(double)RAND_MAX);
@@ -36,15 +36,15 @@ void PerlinGenerator::run(){
 
     m_perlin.clear();
 	m_perlin.reserve(m_sizeXMax*m_sizeYMax*m_sizeZMax);
-	#pragma omp parallel for
 	int compteur = 0;
+	//#pragma omp parallel for
 	for (int k = 0; k < m_sizeZ; ++k){
 		for (int i = 0; i < m_sizeX; ++i){
             for (int j = 0; j < m_sizeY; ++j){
                 m_perlin.push_back(getPerlin(i, j, k));
             }
 		}
-		#pragma omp critical
+		//#pragma omp critical
         compteur++;
 		progressStatus(25 + 75*((float)compteur/m_sizeZ));
 	}
