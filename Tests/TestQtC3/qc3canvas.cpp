@@ -7,7 +7,11 @@ QC3Canvas::QC3Canvas(QWidget *parent, const QPoint& Position, const QSize& Size,
 
     // Mise en place de quelques options pour autoriser le rendu direct dans le widget
     setAttribute(Qt::WA_PaintOnScreen);
+    setAttribute(Qt::WA_OpaquePaintEvent);
     setAttribute(Qt::WA_NoSystemBackground);
+
+	// Changement de la police de focus, pour autoriser notre widget à capter les évènements clavier
+    setFocusPolicy(Qt::StrongFocus);
 
     // Définition de la position et de la taille du widget
     move(Position);

@@ -10,7 +10,6 @@ mainWindow::mainWindow(QWidget *parent) :
     QObject::connect(ui.hsSlideSelector, SIGNAL(valueChanged(int)), this, SLOT(updateDisplay()));
     QObject::connect(ui.bExport, SIGNAL(clicked()), this, SLOT(exportPBRT()));
     m_c3 = new C3Canvas(ui.gPreview, QPoint(0,0), QSize(512, 512));
-    m_c3->show();
 }
 
 void mainWindow::launchGeneration(){
