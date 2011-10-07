@@ -111,7 +111,7 @@ int main()
 		cutilSafeCall(cudaGraphicsUnmapResources(1, &cuda_pbo_resource, 0));
 		
 		// download image from PBO to OpenGL texture
-		glBindBufferARB(GL_PIXEL_UNPACK_BUFFER_ARB, pbo);
+		glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo);
 		glBindTexture  (GL_TEXTURE_2D, texid);
 		glPixelStorei  (GL_UNPACK_ALIGNMENT, 1);
 		glTexSubImage2D(GL_TEXTURE_2D,
@@ -135,10 +135,13 @@ int main()
 	}
 
 	// Liberation des ressources
-	//cudaGraphicsUnregisterResource(cuda_vbo_resource);
+	cudaGraphicsUnregisterResource(cuda_pbo_resource);
 	
-	//glBindBuffer(1, vbo);
-	//glDeleteBuffers(1, &vbo);
+	// OpenGL liberation des ressources
+	glBindBuffer(GL_PIXEL_UNPACK_BUFFER, pbo);
+	glDeleteBuffers(1, &pbo);
+	glBindTexture(GL_TEXTURE_2D, texid);
+	glDeleteTextures(1, &texid);
 
 	// Close device
 	cutilDeviceReset();
