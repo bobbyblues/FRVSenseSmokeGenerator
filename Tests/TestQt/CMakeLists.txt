@@ -12,7 +12,14 @@ INCLUDE_DIRECTORIES(
 SET(PERLIN_SRCS
     main.cpp
     perlingeneratorbutton.cpp
-    mainwindow.cpp
+    perlingeneratorbutton.h
+	mainwindow.cpp
+	mainwindow.h
+	Exporters/Exporters.h
+	Exporters/Exporters.cpp
+
+	Exporters/ExporterPBRT.cpp
+	Exporters/ExporterPBRT.h
 )
 
 QT4_WRAP_CPP(PERLIN_SRCS 

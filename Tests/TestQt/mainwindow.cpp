@@ -1,13 +1,32 @@
 #include "mainwindow.h"
 
+#include <QMenuBar>
+#include <QMenu>
+#include <QFileDialog>
+
 mainWindow::mainWindow(QWidget *parent) :
     QMainWindow(parent)
 {
     ui.setupUi(this);
-    QObject::connect(ui.bGeneratePerlin, SIGNAL(clicked()), this, SLOT(launchGeneration()));
+    
+	// Create menu
+	// *** Main section
+	QMenu* menuFichier = menuBar()->addMenu("&Fichier");
+	// *** Subsection
+	//  -- Fichier
+	QMenu *menuExporter = menuFichier->addMenu("&Exporter");
+	QAction *actionExportPBRT = menuExporter->addAction("PBRT");
+	QAction *actionQuitter = menuFichier->addAction("&Quitter");
+
+	// Connect objects
+	// *** Menu
+	QObject::connect(actionQuitter, SIGNAL(triggered()), qApp, SLOT(quit()));
+	QObject::connect(actionExportPBRT, SIGNAL(triggered()), this, SLOT(exporter(PBRT_EXPORTER)));
+
+	// *** Other objects
+	QObject::connect(ui.bGeneratePerlin, SIGNAL(clicked()), this, SLOT(launchGeneration()));
     QObject::connect(&m_perlin, SIGNAL(progressStatus(int)), ui.pbGeneration, SLOT(setValue(int)));
     QObject::connect(ui.hsSlideSelector, SIGNAL(valueChanged(int)), this, SLOT(updateDisplay()));
-    QObject::connect(ui.bExport, SIGNAL(clicked()), this, SLOT(exportPBRT()));
 }
 
 void mainWindow::launchGeneration(){
@@ -33,6 +52,8 @@ void mainWindow::updateDisplay(){
     ui.lPreview->setPixmap(QPixmap("temp.pgm"));
 }
 
-void mainWindow::exportPBRT(){
-    m_perlin.writePBRTFile("smoke.pbrt");
+void mainWindow::exporter(ExportersAvalaibleType t)
+{
+	QString fichier = QFileDialog::getSaveFileName(this,"Exporter vers");
+	Exporters::Exporter(fichier.toStdString(), (ExportersAvalaibleType)t);
 }
