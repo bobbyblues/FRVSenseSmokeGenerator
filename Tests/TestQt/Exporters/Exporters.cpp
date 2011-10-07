@@ -14,6 +14,9 @@ namespace Exporters
 		case PBRT_EXPORTER:
 			std::cout << "Export de " << fullpath << " en PBRT\n";
 			break;
+		case RAW_EXPORTER:
+			std::cout << "Export de " << fullpath << " en RAW\n";
+			break;
 		default:
 			// TODO: Lever une exception
 			break;

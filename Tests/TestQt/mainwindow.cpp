@@ -16,12 +16,14 @@ mainWindow::mainWindow(QWidget *parent) :
 	//  -- Fichier
 	QMenu *menuExporter = menuFichier->addMenu("&Exporter");
 	QAction *actionExportPBRT = menuExporter->addAction("PBRT");
+	QAction *actionExportRAW = menuExporter->addAction("RAW");
 	QAction *actionQuitter = menuFichier->addAction("&Quitter");
 
 	// Connect objects
 	// *** Menu
 	QObject::connect(actionQuitter, SIGNAL(triggered()), qApp, SLOT(quit()));
-	QObject::connect(actionExportPBRT, SIGNAL(triggered()), this, SLOT(exporter(PBRT_EXPORTER)));
+	QObject::connect(actionExportPBRT, SIGNAL(triggered()), this, SLOT(exporterPBRT()));
+	QObject::connect(actionExportRAW, SIGNAL(triggered()), this, SLOT(exporterRAW()));
 
 	// *** Other objects
 	QObject::connect(ui.bGeneratePerlin, SIGNAL(clicked()), this, SLOT(launchGeneration()));

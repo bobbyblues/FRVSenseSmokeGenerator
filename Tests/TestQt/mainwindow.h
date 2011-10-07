@@ -16,12 +16,16 @@ private:
 public:
     explicit mainWindow(QWidget *parent = 0);
 
+private:
+	void exporter(ExportersAvalaibleType t);
+
 signals:
 
 public slots:
     void launchGeneration();
     void updateDisplay();
-	void exporter(ExportersAvalaibleType t);
+	void exporterPBRT() { exporter(PBRT_EXPORTER); };
+	void exporterRAW() { exporter(RAW_EXPORTER); };
 };
 
 #endif // MAINWINDOW_H

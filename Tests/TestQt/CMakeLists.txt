@@ -20,6 +20,8 @@ SET(PERLIN_SRCS
 
 	Exporters/ExporterPBRT.cpp
 	Exporters/ExporterPBRT.h
+	Exporters/ExporterRAW.cpp
+	Exporters/ExporterRAW.h
 )
 
 QT4_WRAP_CPP(PERLIN_SRCS 

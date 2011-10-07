@@ -6,7 +6,8 @@
 // Liste de tous les exporters
 enum ExportersAvalaibleType
 {
-	PBRT_EXPORTER = 0
+	PBRT_EXPORTER = 0,
+	RAW_EXPORTER = 1
 };
 
 namespace Exporters
