@@ -35,6 +35,8 @@ public:
 		{
 			Data[i] = 0;
 		}
+
+                Scale = 1.f;
 	}
 
 	virtual ~Perlin3DObject()
@@ -84,7 +86,7 @@ public:
 	void Compute() { start(); }
 	Perlin3DObject * GetCurrentResult() { return m_Result; }
 
-        void SetScaleValue(float Scale){ m_Result->Scale = Scale; }
+        void SetScaleValue(float Scale){ if (m_Result) m_Result->Scale = Scale; }
     
 protected:
 	virtual void run();

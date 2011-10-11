@@ -30,7 +30,7 @@ public slots:
 		updateDisplay(0);
 	}
     void updateDisplay(int layer);
-    void updateContraste(int value);
+    void updateContraste();
 	void setNewStepValue(double v) {
 		if(v < std::pow(2.f, ui.sbNbOctave->value() -1))
 			ui.dspStep->setValue(std::pow(2.f, ui.sbNbOctave->value() -1));

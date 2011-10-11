@@ -31,8 +31,9 @@ mainWindow::mainWindow(QWidget *parent) :
         QObject::connect(&m_PerlinGenerator, SIGNAL(progressStatus(int)), ui.pbGeneration, SLOT(setValue(int)));
         QObject::connect(ui.hsSlideSelector, SIGNAL(valueChanged(int)), this, SLOT(updateDisplay(int)));
 	QObject::connect(&m_PerlinGenerator, SIGNAL(finished()), this, SLOT(newResultToDisplay()));
+        QObject::connect(&m_PerlinGenerator, SIGNAL(finished()), this, SLOT(updateContraste()));
 	QObject::connect(ui.dspStep,SIGNAL(valueChanged(double)), this, SLOT(setNewStepValue(double)));
-        QObject::connect(ui.hsContraste, SIGNAL(valueChanged(int)), this, SLOT(updateContraste(int)));
+        QObject::connect(ui.hsContraste, SIGNAL(valueChanged(int)), this, SLOT(updateContraste()));
 }
 
 void mainWindow::launchGeneration(){
@@ -51,30 +52,31 @@ void mainWindow::launchGeneration(){
 		m_PerlinGenerator.Prepare(config);
 		m_PerlinGenerator.Compute();
 
-                m_PerlinGenerator.SetScaleValue(ui.hsContraste->value() / 10.f);
     }
 }
 
 void mainWindow::updateDisplay(int layer){
-	std::cout << "Update Display :) " << layer << std::endl;
-	const Perlin3DObject& result = *m_PerlinGenerator.GetCurrentResult();
+    std::cout << "Update Display :) " << layer << std::endl;
+    if (m_PerlinGenerator.GetCurrentResult()){
+        const Perlin3DObject& result = *m_PerlinGenerator.GetCurrentResult();
 
 	QImage image = QImage(result.Size.x, result.Size.y, QImage::Format_ARGB32);
 	for (int y = 0; y < result.Size.y; y++) 
 	{
-		QRgb* rgb = (QRgb*)image.scanLine(result.Size.y-(y+1)); // Il faut que l'image soit en ARGB32 (je pense, voir la doc)
-		for (int x = 0; x < result.Size.x; x++) 
-		{
-                        float v = ceil(result.GetData(x,y,layer)*255);
-			rgb[x] = qRgba(v, v, v, 255);
-		}
+            QRgb* rgb = (QRgb*)image.scanLine(result.Size.y-(y+1)); // Il faut que l'image soit en ARGB32 (je pense, voir la doc)
+            for (int x = 0; x < result.Size.x; x++)
+            {
+                float v = ceil(result.GetData(x,y,layer)*255);
+                rgb[x] = qRgba(v, v, v, 255);
+            }
 	}
 	//image = image.scaled(m_width,m_height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	ui.lPreview->setPixmap(QPixmap::fromImage(image, Qt::AutoColor));
-	ui.lPreview->setAlignment(Qt::AlignCenter);
+        ui.lPreview->setAlignment(Qt::AlignCenter);
+    }
 }
 
-void mainWindow::updateContraste(int value){
+void mainWindow::updateContraste(){
     m_PerlinGenerator.SetScaleValue(ui.hsContraste->value() / 10.f);
     updateDisplay(ui.hsSlideSelector->value());
 }
