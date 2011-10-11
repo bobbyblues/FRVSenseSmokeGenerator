@@ -13,11 +13,13 @@ private:
     Ui::mainForm ui;
     PerlinGenerator m_PerlinGenerator;
 
+
 public:
     explicit mainWindow(QWidget *parent = 0);
 
 private:
 	void exporter(ExportersAvalaibleType t);
+        float getContrastedData(float data);
 
 signals:
 
@@ -28,6 +30,7 @@ public slots:
 		updateDisplay(0);
 	}
     void updateDisplay(int layer);
+    void updateContraste(int value);
 	void setNewStepValue(double v) {
 		if(v < std::pow(2.f, ui.sbNbOctave->value() -1))
 			ui.dspStep->setValue(std::pow(2.f, ui.sbNbOctave->value() -1));

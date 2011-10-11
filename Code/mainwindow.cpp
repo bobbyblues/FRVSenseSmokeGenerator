@@ -28,10 +28,11 @@ mainWindow::mainWindow(QWidget *parent) :
 
 	// *** Other objects
 	QObject::connect(ui.bGeneratePerlin, SIGNAL(clicked()), this, SLOT(launchGeneration()));
-    QObject::connect(&m_PerlinGenerator, SIGNAL(progressStatus(int)), ui.pbGeneration, SLOT(setValue(int)));
-    QObject::connect(ui.hsSlideSelector, SIGNAL(valueChanged(int)), this, SLOT(updateDisplay(int)));
+        QObject::connect(&m_PerlinGenerator, SIGNAL(progressStatus(int)), ui.pbGeneration, SLOT(setValue(int)));
+        QObject::connect(ui.hsSlideSelector, SIGNAL(valueChanged(int)), this, SLOT(updateDisplay(int)));
 	QObject::connect(&m_PerlinGenerator, SIGNAL(finished()), this, SLOT(newResultToDisplay()));
 	QObject::connect(ui.dspStep,SIGNAL(valueChanged(double)), this, SLOT(setNewStepValue(double)));
+        QObject::connect(ui.hsContraste, SIGNAL(valueChanged(int)), this, SLOT(updateContraste(int)));
 }
 
 void mainWindow::launchGeneration(){
@@ -62,13 +63,22 @@ void mainWindow::updateDisplay(int layer){
 		QRgb* rgb = (QRgb*)image.scanLine(result.Size.y-(y+1)); // Il faut que l'image soit en ARGB32 (je pense, voir la doc)
 		for (int x = 0; x < result.Size.x; x++) 
 		{
-			float v = ceil(result.GetData(x,y,layer)*255);
+                        float v = ceil(getContrastedData(result.GetData(x,y,layer))*255);
 			rgb[x] = qRgba(v, v, v, 255);
 		}
 	}
 	//image = image.scaled(m_width,m_height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	ui.lPreview->setPixmap(QPixmap::fromImage(image, Qt::AutoColor));
 	ui.lPreview->setAlignment(Qt::AlignCenter);
+}
+
+void mainWindow::updateContraste(int value){
+    updateDisplay(ui.hsSlideSelector->value());
+}
+
+float mainWindow::getContrastedData(float data){
+    float contraste = (float) ui.hsContraste->value() / 10.f;
+    return std::max(std::min(data * contraste - (contraste / 2.f) + 0.5f,1.f),0.f);
 }
 
 void mainWindow::exporter(ExportersAvalaibleType t)
