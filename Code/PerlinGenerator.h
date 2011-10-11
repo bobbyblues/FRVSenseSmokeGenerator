@@ -23,6 +23,7 @@ public:
 	// Attributes
 	glm::ivec3 Size;
 	float* Data;
+        float Scale;
 
 	// Constructors & Destructors
 	Perlin3DObject(const glm::ivec3& size):
@@ -42,9 +43,17 @@ public:
 	}
 
 	inline float GetData(int x, int y,int z) const
-	{
-		return Data[z * Size.x * Size.y + y * Size.x + x];
+        {
+                float unscaledData = Data[z * Size.x * Size.y + y * Size.x + x];
+                return GetScaledData(unscaledData);
 	}
+
+private:
+        inline float GetScaledData(float data) const{
+            return std::max(std::min(data * Scale - (Scale / 2.f) + 0.5f,1.f),0.f);
+        }
+
+
 };
 
 class PerlinGenerator : public QThread
@@ -74,6 +83,8 @@ public:
 	void Prepare(Perlin3DConfig& config);
 	void Compute() { start(); }
 	Perlin3DObject * GetCurrentResult() { return m_Result; }
+
+        void SetScaleValue(float Scale){ m_Result->Scale = Scale; }
     
 protected:
 	virtual void run();

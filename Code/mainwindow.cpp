@@ -50,6 +50,8 @@ void mainWindow::launchGeneration(){
 
 		m_PerlinGenerator.Prepare(config);
 		m_PerlinGenerator.Compute();
+
+                m_PerlinGenerator.SetScaleValue(ui.hsContraste->value() / 10.f);
     }
 }
 
@@ -63,7 +65,7 @@ void mainWindow::updateDisplay(int layer){
 		QRgb* rgb = (QRgb*)image.scanLine(result.Size.y-(y+1)); // Il faut que l'image soit en ARGB32 (je pense, voir la doc)
 		for (int x = 0; x < result.Size.x; x++) 
 		{
-                        float v = ceil(getContrastedData(result.GetData(x,y,layer))*255);
+                        float v = ceil(result.GetData(x,y,layer)*255);
 			rgb[x] = qRgba(v, v, v, 255);
 		}
 	}
@@ -73,6 +75,7 @@ void mainWindow::updateDisplay(int layer){
 }
 
 void mainWindow::updateContraste(int value){
+    m_PerlinGenerator.SetScaleValue(ui.hsContraste->value() / 10.f);
     updateDisplay(ui.hsSlideSelector->value());
 }
 
