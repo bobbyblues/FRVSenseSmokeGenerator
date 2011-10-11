@@ -31,7 +31,7 @@ int main()
 	int height = 600;
 
 	cudaExtent volumeSize = make_cudaExtent(32, 32, 32);
-	const std::string path = "../Ressources/Bucky.raw";
+	const std::string path = "../Ressources/32fumee.raw";
 
 	// Creation du device
 	cutilSafeCall( cudaGLSetGLDevice( cutGetMaxGflopsDeviceId() ) );

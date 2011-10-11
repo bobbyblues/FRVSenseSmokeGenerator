@@ -163,20 +163,22 @@ d_render(uint *d_output, uint imageW, uint imageH,
         // remap position to [0, 1] coordinates
         float sample = tex3D(tex, pos.x*0.5f+0.5f, pos.y*0.5f+0.5f, pos.z*0.5f+0.5f);
         //sample *= 64.0f;    // scale for 10-bit data
+		sample *= density;
 
         // lookup in transfer function texture
-        float4 col = tex1D(transferTex, (sample-transferOffset)*transferScale);
-        col.w *= density;
-
+        //float4 col = tex1D(transferTex, (sample-transferOffset)*transferScale);
+        //col.w *= density;
+		
         // "under" operator for back-to-front blending
         //sum = lerp(sum, col, col.w);
 
         // pre-multiply alpha
-        col.x *= col.w;
-        col.y *= col.w;
-        col.z *= col.w;
+        //col.x *= col.w;
+        //col.y *= col.w;
+        //col.z *= col.w;
+        
         // "over" operator for front-to-back blending
-        sum = sum + col*(1.0f - sum.w);
+        sum = sum + make_float4(sample,sample,sample,density)*(1.0f - sum.w);
 
         // exit early if opaque
         if (sum.w > opacityThreshold)
