@@ -18,13 +18,18 @@ mainWindow::mainWindow(QWidget *parent) :
 	QMenu *menuExporter = menuFichier->addMenu("&Exporter");
 	QAction *actionExportPBRT = menuExporter->addAction("PBRT");
 	QAction *actionExportRAW = menuExporter->addAction("RAW");
-	QAction *actionQuitter = menuFichier->addAction("&Quitter");
+
+        QMenu *menuImporter = menuFichier->addMenu("&Importer");
+        QAction *actionImportPBRT = menuImporter->addAction("PBRT");
+
+        QAction *actionQuitter = menuFichier->addAction("&Quitter");
 
 	// Connect objects
 	// *** Menu
 	QObject::connect(actionQuitter, SIGNAL(triggered()), qApp, SLOT(quit()));
 	QObject::connect(actionExportPBRT, SIGNAL(triggered()), this, SLOT(exporterPBRT()));
 	QObject::connect(actionExportRAW, SIGNAL(triggered()), this, SLOT(exporterRAW()));
+        QObject::connect(actionImportPBRT, SIGNAL(triggered()), this, SLOT(importerPBRT()));
 
 	// *** Other objects
 	QObject::connect(ui.bGeneratePerlin, SIGNAL(clicked()), this, SLOT(launchGeneration()));
@@ -91,3 +96,20 @@ void mainWindow::exporter(ExportersAvalaibleType t)
 	QString fichier = QFileDialog::getSaveFileName(this,"Exporter vers");
 	Exporters::Exporter(fichier.toStdString(), (ExportersAvalaibleType)t, *m_PerlinGenerator.GetCurrentResult());
 }
+
+void mainWindow::importer(ImportersAvalaibleType t)
+{
+        QString fichier = QFileDialog::getOpenFileName(this,"Importer depuis");
+        Importers::Importer(fichier.toStdString(), (ImportersAvalaibleType)t, *m_PerlinGenerator.GetCurrentResult());
+
+        Perlin3DObject& result = *m_PerlinGenerator.GetCurrentResult();
+
+        // Mise a jour de l'interface
+        ui.sbSizeX->setValue(result.Size.x);
+        ui.sbSizeY->setValue(result.Size.y);
+        ui.sbSizeZ->setValue(result.Size.z);
+        ui.hsSlideSelector->setMaximum(ui.sbSizeZ->value());
+        ui.hsSlideSelector->setValue(0);
+        updateDisplay(0);
+}
+
