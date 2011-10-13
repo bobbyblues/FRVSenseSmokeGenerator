@@ -50,6 +50,11 @@ public:
                 return GetScaledData(unscaledData);
 	}
 
+        inline void SetData(float data, int x, int y, int z)
+        {
+            Data[z * Size.x * Size.y + y * Size.x + x] = data;
+        }
+
 private:
         inline float GetScaledData(float data) const{
             return std::max(std::min(data * Scale - (Scale / 2.f) + 0.5f,1.f),0.f);

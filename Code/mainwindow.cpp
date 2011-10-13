@@ -41,20 +41,29 @@ mainWindow::mainWindow(QWidget *parent) :
         QObject::connect(ui.hsContraste, SIGNAL(valueChanged(int)), this, SLOT(updateContraste()));
 }
 
+
+
+void mainWindow::updatePerlinGenerator(){
+    if (!m_PerlinGenerator.isRunning()){
+                Perlin3DConfig config;
+                config.Size = glm::ivec3(ui.sbSizeX->value(),
+                                                                 ui.sbSizeY->value(),
+                                                                 ui.sbSizeZ->value());
+
+                ui.hsSlideSelector->setMaximum(ui.sbSizeZ->value() - 1);
+
+                config.NbOctaves = ui.sbNbOctave->value();
+                config.Step = ui.dspStep->value();
+                config.Persistance = ui.dspPersistance->value();
+
+                m_PerlinGenerator.Prepare(config);
+
+    }
+}
+
 void mainWindow::launchGeneration(){
     if (!m_PerlinGenerator.isRunning()){
-		Perlin3DConfig config;
-		config.Size = glm::ivec3(ui.sbSizeX->value(),
-								 ui.sbSizeY->value(),
-								 ui.sbSizeZ->value());
-
-		ui.hsSlideSelector->setMaximum(ui.sbSizeZ->value() - 1);
-
-		config.NbOctaves = ui.sbNbOctave->value();
-		config.Step = ui.dspStep->value();
-		config.Persistance = ui.dspPersistance->value();
-
-		m_PerlinGenerator.Prepare(config);
+                updatePerlinGenerator();
 		m_PerlinGenerator.Compute();
 
     }
@@ -99,17 +108,36 @@ void mainWindow::exporter(ExportersAvalaibleType t)
 
 void mainWindow::importer(ImportersAvalaibleType t)
 {
+        Perlin3DObject * result = m_PerlinGenerator.GetCurrentResult();
         QString fichier = QFileDialog::getOpenFileName(this,"Importer depuis");
-        Importers::Importer(fichier.toStdString(), (ImportersAvalaibleType)t, *m_PerlinGenerator.GetCurrentResult());
+        Importers::Importer(fichier.toStdString(), (ImportersAvalaibleType)t, *result);
+        std::cout << "import done" << std::endl;
 
-        Perlin3DObject& result = *m_PerlinGenerator.GetCurrentResult();
+/*        // For debugging only
+        std::cout << "Values : " << std::endl;
+        int nz = 1;
+        int ny = 2;
+        int nx = 2;
+
+        for (int z = 0; z < nz; ++z)
+                for (int y = 0; y < ny; ++y)
+                    for (int x = 0; x < nx; ++x){
+                         std::cout << "[" << x << "," << y << "," << z << "] = " << result->GetData(x,y,z) << std::endl;
+                    }
+
+
 
         // Mise a jour de l'interface
-        ui.sbSizeX->setValue(result.Size.x);
-        ui.sbSizeY->setValue(result.Size.y);
-        ui.sbSizeZ->setValue(result.Size.z);
-        ui.hsSlideSelector->setMaximum(ui.sbSizeZ->value());
+        ui.sbSizeX->setValue(result->Size.x);
+        ui.sbSizeY->setValue(result->Size.y);
+        ui.sbSizeZ->setValue(result->Size.z);
+        std::cout << "plop" << std::endl;
+        ui.hsSlideSelector->setMaximum(ui.sbSizeZ->value() - 1);
         ui.hsSlideSelector->setValue(0);
-        updateDisplay(0);
+
+        std::cout << "modification ui done" << std::endl;
+        updatePerlinGenerator();
+        std::cout << "modification pg done" << std::endl;
+        updateDisplay(0);*/
 }
 

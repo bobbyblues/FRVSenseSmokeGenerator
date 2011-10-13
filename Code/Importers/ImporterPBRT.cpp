@@ -131,6 +131,11 @@ void Importer(const std::string& path, Perlin3DObject& obj)
 
     // For debugging only
     std::cout << "Size : [" << nx << " ; " << ny << " ; " << nz << "]" << std::endl;
+    glm::ivec3 Size = glm::ivec3();
+    Size.x = nx;
+    Size.y = ny;
+    Size.z = nz;
+    obj = Perlin3DObject(Size);
 
     currLine = startingLine;
     line = lines[currLine];
@@ -161,46 +166,38 @@ void Importer(const std::string& path, Perlin3DObject& obj)
 
 
     // We read the values making the assumption that there is no 2 spaces between 2 values
-    float * Data = new float[nx * ny * nz];
     currLine = startingLine;
     line = lines[currLine];
     line = line.substr(valuesStart + 1);
-    int i = 0;
-    int max = nx * ny * nz;
     std::stringstream ss(line);
-    while (i < max){
-        if (ss.eof()){
-            ++currLine;
-            line = lines[currLine];
-            ss.clear();
-            ss << line;
-        }
-    float temp;
-            std::cout << "plip" << std::endl;
-            ss >> temp;
-            std::cout << temp << std::endl;
-            Data[i] = temp;
-            ++i;
+    for (int z = 0; z < nz; ++z)
+        for (int y = 0; y < ny; ++y)
+            for (int x = 0; x < nx; ++x){
+                if (ss.eof()){
+                    ++currLine;
+                    line = lines[currLine];
+                    ss.clear();
+                    ss << line;
+                }
+                float temp;
+                ss >> temp;
+                while (ss.fail() || ss.bad()){
+                    ++currLine;
+                    line = lines[currLine];
+                    ss.clear();
+                    ss << line;
+                    ss >> temp;
+                }
 
-
-
+                obj.SetData(temp, x, y, z);
+                std::cout << "[" << x << "," << y << "," << z << "] = " << temp  << " / " << obj.GetData(x,y,z) << std::endl;
     }
 
 
-    if (obj.Data)
-        delete[] Data;
-    obj.Data = Data;
-    obj.Size = glm::ivec3();
-    obj.Size.x = nx;
-    obj.Size.y = ny;
-    obj.Size.z = nz;
 
-    // For debugging only
-    std::cout << "Values : " << std::endl;
-    for (int i = 0; i < nx * ny * nz ; ++i){
-       // std::cout << Data[i] << " ";
-    }
 
+
+    std::cout << "fin de l'import" << std::endl;
 }
 
 }

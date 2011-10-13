@@ -26,11 +26,13 @@ private:
 signals:
 
 public slots:
+    void updatePerlinGenerator();
     void launchGeneration();
     void newResultToDisplay() {
         ui.hsSlideSelector->setValue(0);
         updateDisplay(0);
     }
+
     void updateDisplay(int layer);
     void updateContraste();
     void setNewStepValue(double v) {
