@@ -13,6 +13,7 @@ class mainWindow : public QMainWindow
 private:
     Ui::mainForm ui;
     PerlinGenerator m_PerlinGenerator;
+    Perlin3DObject * m_Perlin3DObject;
 
 
 public:
@@ -28,8 +29,11 @@ signals:
 public slots:
     void updatePerlinGenerator();
     void launchGeneration();
-    void newResultToDisplay() {
+    void newResultFromGeneration() {
         ui.hsSlideSelector->setValue(0);
+        if (m_Perlin3DObject) delete m_Perlin3DObject;
+        m_Perlin3DObject = m_PerlinGenerator.GetCurrentResult();
+        updateContraste();
         updateDisplay(0);
     }
 

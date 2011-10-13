@@ -12,7 +12,7 @@ enum ImportersAvalaibleType
 
 namespace Importers
 {
-        void Importer(const std::string& fullpath, ImportersAvalaibleType typeImp, Perlin3DObject& obj);
+         Perlin3DObject * Importer(const std::string& fullpath, ImportersAvalaibleType typeImp);
 }
 
 

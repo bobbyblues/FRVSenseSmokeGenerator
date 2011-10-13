@@ -10,7 +10,7 @@ namespace PBRT
 {
 
 
-void Importer(const std::string& path, Perlin3DObject& obj)
+Perlin3DObject * Importer(const std::string& path)
 {
 
     int nx, ny, nz;
@@ -128,14 +128,11 @@ void Importer(const std::string& path, Perlin3DObject& obj)
 
     }
 
-
-    // For debugging only
-    std::cout << "Size : [" << nx << " ; " << ny << " ; " << nz << "]" << std::endl;
     glm::ivec3 Size = glm::ivec3();
     Size.x = nx;
     Size.y = ny;
     Size.z = nz;
-    obj = Perlin3DObject(Size);
+    Perlin3DObject * obj = new Perlin3DObject(Size);
 
     currLine = startingLine;
     line = lines[currLine];
@@ -189,15 +186,10 @@ void Importer(const std::string& path, Perlin3DObject& obj)
                     ss >> temp;
                 }
 
-                obj.SetData(temp, x, y, z);
-                std::cout << "[" << x << "," << y << "," << z << "] = " << temp  << " / " << obj.GetData(x,y,z) << std::endl;
+                obj->SetData(temp, x, y, z);
     }
 
-
-
-
-
-    std::cout << "fin de l'import" << std::endl;
+            return obj;
 }
 
 }

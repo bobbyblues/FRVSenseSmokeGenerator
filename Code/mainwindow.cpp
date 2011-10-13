@@ -6,7 +6,8 @@
 #include <iostream>
 
 mainWindow::mainWindow(QWidget *parent) :
-    QMainWindow(parent)
+    QMainWindow(parent),
+    m_Perlin3DObject(NULL)
 {
     ui.setupUi(this);
     
@@ -35,8 +36,7 @@ mainWindow::mainWindow(QWidget *parent) :
 	QObject::connect(ui.bGeneratePerlin, SIGNAL(clicked()), this, SLOT(launchGeneration()));
         QObject::connect(&m_PerlinGenerator, SIGNAL(progressStatus(int)), ui.pbGeneration, SLOT(setValue(int)));
         QObject::connect(ui.hsSlideSelector, SIGNAL(valueChanged(int)), this, SLOT(updateDisplay(int)));
-	QObject::connect(&m_PerlinGenerator, SIGNAL(finished()), this, SLOT(newResultToDisplay()));
-        QObject::connect(&m_PerlinGenerator, SIGNAL(finished()), this, SLOT(updateContraste()));
+        QObject::connect(&m_PerlinGenerator, SIGNAL(finished()), this, SLOT(newResultFromGeneration()));
 	QObject::connect(ui.dspStep,SIGNAL(valueChanged(double)), this, SLOT(setNewStepValue(double)));
         QObject::connect(ui.hsContraste, SIGNAL(valueChanged(int)), this, SLOT(updateContraste()));
 }
@@ -58,6 +58,7 @@ void mainWindow::updatePerlinGenerator(){
 
                 m_PerlinGenerator.Prepare(config);
 
+
     }
 }
 
@@ -70,17 +71,16 @@ void mainWindow::launchGeneration(){
 }
 
 void mainWindow::updateDisplay(int layer){
-    std::cout << "Update Display :) " << layer << std::endl;
-    if (m_PerlinGenerator.GetCurrentResult()){
-        const Perlin3DObject& result = *m_PerlinGenerator.GetCurrentResult();
+    //std::cout << "Update Display :) " << layer << std::endl;
+    if (m_Perlin3DObject){
 
-	QImage image = QImage(result.Size.x, result.Size.y, QImage::Format_ARGB32);
-	for (int y = 0; y < result.Size.y; y++) 
+        QImage image = QImage(m_Perlin3DObject->Size.x, m_Perlin3DObject->Size.y, QImage::Format_ARGB32);
+        for (int y = 0; y < m_Perlin3DObject->Size.y; y++)
 	{
-            QRgb* rgb = (QRgb*)image.scanLine(result.Size.y-(y+1)); // Il faut que l'image soit en ARGB32 (je pense, voir la doc)
-            for (int x = 0; x < result.Size.x; x++)
+            QRgb* rgb = (QRgb*)image.scanLine(m_Perlin3DObject->Size.y-(y+1)); // Il faut que l'image soit en ARGB32 (je pense, voir la doc)
+            for (int x = 0; x < m_Perlin3DObject->Size.x; x++)
             {
-                float v = ceil(result.GetData(x,y,layer)*255);
+                float v = ceil(m_Perlin3DObject->GetData(x,y,layer)*255);
                 rgb[x] = qRgba(v, v, v, 255);
             }
 	}
@@ -91,7 +91,7 @@ void mainWindow::updateDisplay(int layer){
 }
 
 void mainWindow::updateContraste(){
-    m_PerlinGenerator.SetScaleValue(ui.hsContraste->value() / 10.f);
+    m_Perlin3DObject->Scale = ui.hsContraste->value() / 10.f;
     updateDisplay(ui.hsSlideSelector->value());
 }
 
@@ -103,41 +103,25 @@ float mainWindow::getContrastedData(float data){
 void mainWindow::exporter(ExportersAvalaibleType t)
 {
 	QString fichier = QFileDialog::getSaveFileName(this,"Exporter vers");
-	Exporters::Exporter(fichier.toStdString(), (ExportersAvalaibleType)t, *m_PerlinGenerator.GetCurrentResult());
+        Exporters::Exporter(fichier.toStdString(), (ExportersAvalaibleType)t, *m_Perlin3DObject);
 }
 
 void mainWindow::importer(ImportersAvalaibleType t)
 {
-        Perlin3DObject * result = m_PerlinGenerator.GetCurrentResult();
         QString fichier = QFileDialog::getOpenFileName(this,"Importer depuis");
-        Importers::Importer(fichier.toStdString(), (ImportersAvalaibleType)t, *result);
-        std::cout << "import done" << std::endl;
-
-/*        // For debugging only
-        std::cout << "Values : " << std::endl;
-        int nz = 1;
-        int ny = 2;
-        int nx = 2;
-
-        for (int z = 0; z < nz; ++z)
-                for (int y = 0; y < ny; ++y)
-                    for (int x = 0; x < nx; ++x){
-                         std::cout << "[" << x << "," << y << "," << z << "] = " << result->GetData(x,y,z) << std::endl;
-                    }
-
-
+        if (m_Perlin3DObject) delete m_Perlin3DObject;
+        m_Perlin3DObject = Importers::Importer(fichier.toStdString(), (ImportersAvalaibleType)t);
 
         // Mise a jour de l'interface
-        ui.sbSizeX->setValue(result->Size.x);
-        ui.sbSizeY->setValue(result->Size.y);
-        ui.sbSizeZ->setValue(result->Size.z);
-        std::cout << "plop" << std::endl;
+        ui.sbSizeX->setValue(m_Perlin3DObject->Size.x);
+        ui.sbSizeY->setValue(m_Perlin3DObject->Size.y);
+        ui.sbSizeZ->setValue(m_Perlin3DObject->Size.z);
         ui.hsSlideSelector->setMaximum(ui.sbSizeZ->value() - 1);
         ui.hsSlideSelector->setValue(0);
+        ui.hsContraste->setValue(1);
 
-        std::cout << "modification ui done" << std::endl;
-        updatePerlinGenerator();
-        std::cout << "modification pg done" << std::endl;
-        updateDisplay(0);*/
+
+        updateDisplay(0);
+
 }
 

@@ -8,7 +8,7 @@ namespace Importers
 {
         namespace PBRT
         {
-                void Importer(const std::string& path, Perlin3DObject& obj);
+                Perlin3DObject * Importer(const std::string& path);
         }
 }
 

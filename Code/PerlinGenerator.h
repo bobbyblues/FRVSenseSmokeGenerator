@@ -88,8 +88,14 @@ public:
 	virtual ~PerlinGenerator();
 
 	void Prepare(Perlin3DConfig& config);
+        /**
+         * Computes a new perlin noise according to the parameters set in the configuration.
+         * @post The perlin noise generated can be accessed with the GetCurrentResult method.
+         * @pre A previously generated perlin noise has been deleted
+         */
 	void Compute() { start(); }
 	Perlin3DObject * GetCurrentResult() { return m_Result; }
+        //void SetCurrentResult(Perlin3DObject * result) { m_Result = result; }
 
         void SetScaleValue(float Scale){ if (m_Result) m_Result->Scale = Scale; }
     
