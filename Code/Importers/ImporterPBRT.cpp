@@ -12,7 +12,7 @@ namespace PBRT
 
 Perlin3DObject * Importer(const std::string& path)
 {
-
+    std::cout << "debut import" << std::endl;
     int nx, ny, nz;
     nx = ny = nz = 0;
 
@@ -22,9 +22,12 @@ Perlin3DObject * Importer(const std::string& path)
 
     // We read the file
     while (stream){
-        char lineStr[1024];
-        stream.getline(lineStr, 1024);
-        std::string line(lineStr);
+        //char lineStr[1024];
+        //stream.getline(lineStr, 1024);
+        //std::string line(lineStr);
+        std::string line = "";
+        std::getline(stream,line);
+//        stream >> line;
         lines.push_back(line);
 
         //std::cout << line << std::endl;
@@ -37,12 +40,14 @@ Perlin3DObject * Importer(const std::string& path)
 
     while (!found && startingLine < lines.size()){
         std::string line = lines[startingLine];
-        ++startingLine;
+
 
         volumeStart = line.find("volumegrid");
         if (volumeStart != line.npos){
             found = true;
+            continue;
         }
+        ++startingLine;
     }
 
     // We make the assumption that ni and the ni value are on the same line
@@ -188,7 +193,7 @@ Perlin3DObject * Importer(const std::string& path)
 
                 obj->SetData(temp, x, y, z);
     }
-
+    std::cout << "blublu" << std::endl;
             return obj;
 }
 
