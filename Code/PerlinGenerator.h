@@ -50,6 +50,11 @@ public:
                 return GetScaledData(unscaledData);
 	}
 
+        inline void SetData(float data, int x, int y, int z)
+        {
+            Data[z * Size.x * Size.y + y * Size.x + x] = data;
+        }
+
 private:
         inline float GetScaledData(float data) const{
             return std::max(std::min(data * Scale - (Scale / 2.f) + 0.5f,1.f),0.f);
@@ -83,8 +88,14 @@ public:
 	virtual ~PerlinGenerator();
 
 	void Prepare(Perlin3DConfig& config);
+        /**
+         * Computes a new perlin noise according to the parameters set in the configuration.
+         * @post The perlin noise generated can be accessed with the GetCurrentResult method.
+         * @pre A previously generated perlin noise has been deleted
+         */
 	void Compute() { start(); }
 	Perlin3DObject * GetCurrentResult() { return m_Result; }
+        //void SetCurrentResult(Perlin3DObject * result) { m_Result = result; }
 
         void SetScaleValue(float Scale){ if (m_Result) m_Result->Scale = Scale; }
     

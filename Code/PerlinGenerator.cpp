@@ -16,8 +16,6 @@ PerlinGenerator::~PerlinGenerator()
 	if(m_noise)
 		delete[] m_noise;
 
-	if(m_Result)
-		delete m_Result;
 }
 
 void PerlinGenerator::Prepare(Perlin3DConfig& config)
@@ -37,23 +35,20 @@ void PerlinGenerator::run(){
 	////////////////////
 	// Clear & Allocation
 	////////////////////
-	std::cout << "Allocation ... " << std::endl;
+        //std::cout << "Allocation ... " << std::endl;
 	int SizeMaxTotal = m_SizeMax.x * m_SizeMax.y * m_SizeMax.z;
-	std::cout << " * Noise :  " << SizeMaxTotal*sizeof(float) << std::endl;
-    std::cout << " * Perlin :  " << m_Config.Size.x*m_Config.Size.y*m_Config.Size.z*sizeof(float) << std::endl;
+        //std::cout << " * Noise :  " << SizeMaxTotal*sizeof(float) << std::endl;
+        //std::cout << " * Perlin :  " << m_Config.Size.x*m_Config.Size.y*m_Config.Size.z*sizeof(float) << std::endl;
 
 	if(m_noise)
 		delete[] m_noise;
 	m_noise = new float[SizeMaxTotal*m_Config.NbOctaves];
-	
-	if(m_Result)
-		delete m_Result;
 	m_Result = new Perlin3DObject(m_Config.Size);
 
 	////////////////////
 	// Creation du bruit
 	///////////////////
-	std::cout << "Creation Bruit ... " << std::endl;
+        //std::cout << "Creation Bruit ... " << std::endl;
 	for (int i = 0; i < m_Config.NbOctaves; ++i){
         for (int j = 0; j < SizeMaxTotal; ++j){
 			m_noise[i*SizeMaxTotal + j] = ((float)rand()/(float)RAND_MAX);
@@ -64,7 +59,7 @@ void PerlinGenerator::run(){
 	////////////////////
 	// Calcul du bruit de perlin
 	////////////////////
-	std::cout << "Bruit de perlien ... " << std::endl;
+        //std::cout << "Bruit de perlien ... " << std::endl;
 	int compteur = 0;
 	#pragma omp parallel for
 	for (int x = 0; x < m_Result->Size.x; ++x){
@@ -78,7 +73,7 @@ void PerlinGenerator::run(){
 		progressStatus(25 + 75*((float)compteur/m_Result->Size.x));
 	}
 
-	std::cout << "Fini ! :)" << std::endl;
+        //std::cout << "Fini ! :)" << std::endl;
     progressStatus(100);
 }
 
