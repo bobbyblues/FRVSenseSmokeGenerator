@@ -153,7 +153,7 @@ d_render(uint *d_output, uint imageW, uint imageH,
 	if (tnear < 0.0f) tnear = 0.0f;     // clamp to near plane
 
     // march along ray from front to back, accumulating color
-    float4 sum = make_float4(0.0f);
+    float sum = 0.0f;
     float t = tnear;
     float3 pos = eyeRay.o + eyeRay.d*tnear;
     float3 step = eyeRay.d*tstep;
@@ -166,7 +166,7 @@ d_render(uint *d_output, uint imageW, uint imageH,
 		sample *= density;
 
         // lookup in transfer function texture
-        //float4 col = tex1D(transferTex, (sample-transferOffset)*transferScale);
+        float4 col = tex1D(transferTex, (sample-transferOffset)*transferScale);
         //col.w *= density;
 		
         // "under" operator for back-to-front blending
@@ -178,10 +178,10 @@ d_render(uint *d_output, uint imageW, uint imageH,
         //col.z *= col.w;
         
         // "over" operator for front-to-back blending
-        sum = sum + make_float4(sample,sample,sample,density)*(1.0f - sum.w);
+        sum = sum + sample*(1.0f - sum);
 
         // exit early if opaque
-        if (sum.w > opacityThreshold)
+        if (sum > opacityThreshold)
             break;
 
         t += tstep;
@@ -192,7 +192,7 @@ d_render(uint *d_output, uint imageW, uint imageH,
     sum *= brightness;
 
     // write output color
-    d_output[y*imageW + x] = rgbaFloatToInt(sum);
+    d_output[y*imageW + x] = rgbaFloatToInt(make_float4(sum));
 }
 
 int iDivUp(int a, int b){

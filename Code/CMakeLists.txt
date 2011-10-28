@@ -9,6 +9,10 @@ INCLUDE_DIRECTORIES(
 #	 ${CMAKE_CURRENT_SOURCE_DIR}/../Perlin2D
 )
 
+IF(WIN32)
+	ADD_DEFINITIONS(${OpenMP_C_FLAGS})
+ENDIF()
+
 SET(PERLIN_SRCS
     main.cpp
     PerlinGenerator.cpp

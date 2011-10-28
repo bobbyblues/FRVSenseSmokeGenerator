@@ -23,7 +23,7 @@ public:
 	// Attributes
 	glm::ivec3 Size;
 	float* Data;
-        float Scale;
+    float Scale;
 
 	// Constructors & Destructors
 	Perlin3DObject(const glm::ivec3& size):

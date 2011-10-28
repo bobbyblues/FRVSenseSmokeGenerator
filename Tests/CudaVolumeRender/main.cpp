@@ -22,6 +22,7 @@ extern "C" {
 // Custom fuctions
 void *loadRawFile(const std::string& path, size_t size);
 
+
 int main()
 {
 	/////////////////////////////
@@ -31,7 +32,7 @@ int main()
 	int height = 600;
 
 	cudaExtent volumeSize = make_cudaExtent(32, 32, 32);
-	const std::string path = "../Ressources/32fumee.raw";
+	const std::string path = "../Ressources/32fumee4.raw";
 
 	// Creation du device
 	cutilSafeCall( cudaGLSetGLDevice( cutGetMaxGflopsDeviceId() ) );
@@ -116,7 +117,7 @@ int main()
 			{
 				if(mouseRotationClicked)
 				{
-					viewRotation.x += event.MouseMove.X / 500.0f;
+					viewRotation.x += event.MouseMove.X / 500.f;
 					viewRotation.y += event.MouseMove.Y / 500.0f;
 				}
 			}
