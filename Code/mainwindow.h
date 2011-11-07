@@ -47,6 +47,7 @@ public slots:
     void exporterRAW() { exporter(RAW_EXPORTER); };
 
     void importerPBRT() { importer(PBRT_IMPORTER); };
+    void importerVSQ() { importer(VSQ_IMPORTER); };
 };
 
 #endif // MAINWINDOW_H

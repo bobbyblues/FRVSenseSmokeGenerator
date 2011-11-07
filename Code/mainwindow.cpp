@@ -22,6 +22,7 @@ mainWindow::mainWindow(QWidget *parent) :
 
         QMenu *menuImporter = menuFichier->addMenu("&Importer");
         QAction *actionImportPBRT = menuImporter->addAction("PBRT");
+        QAction *actionImportVSQ = menuImporter->addAction("VSQ");
 
         QAction *actionQuitter = menuFichier->addAction("&Quitter");
 
@@ -31,6 +32,7 @@ mainWindow::mainWindow(QWidget *parent) :
 	QObject::connect(actionExportPBRT, SIGNAL(triggered()), this, SLOT(exporterPBRT()));
 	QObject::connect(actionExportRAW, SIGNAL(triggered()), this, SLOT(exporterRAW()));
         QObject::connect(actionImportPBRT, SIGNAL(triggered()), this, SLOT(importerPBRT()));
+        QObject::connect(actionImportVSQ, SIGNAL(triggered()), this, SLOT(importerVSQ()));
 
 	// *** Other objects
 	QObject::connect(ui.bGeneratePerlin, SIGNAL(clicked()), this, SLOT(launchGeneration()));

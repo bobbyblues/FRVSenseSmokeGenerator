@@ -7,7 +7,8 @@
 // Liste de tous les exporters
 enum ImportersAvalaibleType
 {
-        PBRT_IMPORTER = 0
+        PBRT_IMPORTER = 0,
+        VSQ_IMPORTER = 1
 };
 
 namespace Importers
