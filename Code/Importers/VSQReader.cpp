@@ -6,13 +6,16 @@
 
 VSQReader::VSQReader(std::string path):
     m_path(path),
-    m_stream(path.c_str(), std::ifstream::in | std::ifstream::binary),
-    m_cur(0),
-    m_size()
+    m_cur(0)
 {
 
     // We check if the extension is correct
     std::string ext = path.substr(path.size()-4-1,4);
+
+    m_stream.open(path.c_str(), std::ifstream::in | std::ifstream::binary);
+
+    std::cout << "Opening of the file " << path.c_str() << std::endl;
+
     if (!strcmp(ext.c_str(),".vsq")){
         std::cout << "[Warning] Wrong file extension (.vsq needed)" << std::endl;
     }
@@ -20,16 +23,16 @@ VSQReader::VSQReader(std::string path):
         std::cerr << "[Error] Unable to open file " << m_path << std::endl;
         return;
     }
-    std::cout << "blublu1" << std::endl;
-    m_stream.read((char*)&m_size, sizeof(int));
+
+    m_stream.read((char*)&m_cubeSize, sizeof(int));
     m_stream.read((char*)&m_nbFrame, sizeof(int));
-    std::cout << "blublu2" << std::endl;
+
     m_stream.seekg(0, std::ios::end);
-    std::cout << "blublu3" << std::endl;
+
     m_size.push_back(m_stream.tellg());
-    std::cout << "blublu4" << std::endl;
+
     m_stream.seekg(0);
-    std::cout << "blublu5" << std::endl;
+
 }
 
 bool VSQReader::readFile(unsigned char number){
@@ -74,9 +77,9 @@ float * VSQReader::readFrame(int number){
         return NULL;
     }
     // We find in wich file the frame is in
-    int frameSize = m_cubeSize * m_cubeSize * m_cubeSize * sizeof(float); // size of a frame in bytes
-    int startingByte = number * frameSize + 2 * sizeof(int);
-    int oldStartingByte = startingByte;
+    long frameSize = m_cubeSize * m_cubeSize * m_cubeSize * sizeof(float); // size of a frame in bytes
+    long startingByte = number * frameSize + 2 * sizeof(int);
+    long oldStartingByte = startingByte;
     int fileNumber = 0;
     do{
         if(m_size.size() < fileNumber)
@@ -89,17 +92,17 @@ float * VSQReader::readFrame(int number){
 
     readFile(fileNumber);
 
-    float result[frameSize];
+    float*  result = new float[frameSize];
+    memset(result,1,frameSize);
 
-    m_stream.seekg(oldStartingByte, std::ios::end);
-
-    int readSize = m_stream.tellg();
+    long readSize = m_size[fileNumber] - oldStartingByte;
+    m_stream.seekg(oldStartingByte);
     readSize = std::min(readSize,frameSize);
     m_stream.read((char*)result, readSize);
 
     if(readSize < frameSize){
         readFile(fileNumber+1);
-        m_stream.read((char*)result+readSize, frameSize - readSize);
+        m_stream.read((char*)&result[readSize], frameSize - readSize);
     }
 
     return result;

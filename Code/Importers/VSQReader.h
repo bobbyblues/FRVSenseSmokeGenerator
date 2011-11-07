@@ -12,7 +12,7 @@ private:
 
     std::ifstream m_stream; // Stream of the current file
     unsigned char m_cur; // Indice of the current file
-    std::vector<int> m_size; // Vector of the sizes of the files
+    std::vector<long> m_size; // Vector of the sizes of the files
 
     int m_cubeSize; // Size of the smoke
     int m_nbFrame; // Number of frames

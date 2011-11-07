@@ -17,9 +17,10 @@ Perlin3DObject * Importer(const std::string& path)
 
     VSQReader reader(path);
     std::cout << "import vsq done" << std::endl;
+
     // We need to ask the user which frame he wants
     // For now we assume it is the first one
-    int frameNumber = 0;
+    int frameNumber = 5;
 
     int cubeSize = reader.getSize();
     float * density = reader.readFrame(frameNumber);
@@ -39,6 +40,8 @@ Perlin3DObject * Importer(const std::string& path)
     }
 
     delete[] density;
+
+    return obj;
 
 
 
