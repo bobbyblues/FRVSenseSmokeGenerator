@@ -28,6 +28,12 @@ SET(PERLIN_SRCS
 
 	Importers/ImporterPBRT.cpp
 	Importers/ImporterPBRT.h
+
+	Importers/VSQReader.cpp
+	Importers/VSQReader.h
+	Importers/ImporterVSQ.cpp
+	Importers/ImporterVSQ.h
+
 )
 
 QT4_WRAP_CPP(PERLIN_SRCS 

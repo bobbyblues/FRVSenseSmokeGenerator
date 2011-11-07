@@ -193,7 +193,6 @@ Perlin3DObject * Importer(const std::string& path)
 
                 obj->SetData(temp, x, y, z);
     }
-    std::cout << "blublu" << std::endl;
             return obj;
 }
 

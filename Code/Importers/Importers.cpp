@@ -4,6 +4,7 @@
 
 // Includes des differents importers
 #include "ImporterPBRT.h"
+#include "ImporterVSQ.h"
 
 namespace Importers
 {
@@ -13,6 +14,9 @@ namespace Importers
                 {
                 case PBRT_IMPORTER:
                         PBRT::Importer(fullpath);
+                        break;
+                case VSQ_IMPORTER:
+                        VSQ::Importer(fullpath);
                         break;
                 default:
                         // TODO: Lever une exception
