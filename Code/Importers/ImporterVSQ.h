@@ -8,7 +8,7 @@ namespace Importers
 {
         namespace VSQ
         {
-                Perlin3DObject * Importer(const std::string& path);
+			Perlin3DObject * Importer(const std::string& path);
         }
 }
 #endif // IMPORTERVSQ_H

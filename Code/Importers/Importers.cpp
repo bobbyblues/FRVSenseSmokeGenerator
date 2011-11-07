@@ -13,14 +13,15 @@ namespace Importers
                 switch(typeImp)
                 {
                 case PBRT_IMPORTER:
-                        PBRT::Importer(fullpath);
+                        return PBRT::Importer(fullpath);
                         break;
                 case VSQ_IMPORTER:
-                        VSQ::Importer(fullpath);
+                        return VSQ::Importer(fullpath);
                         break;
                 default:
                         // TODO: Lever une exception
                         break;
                 }
+				return NULL;
         }
 }
