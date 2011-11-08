@@ -111,17 +111,19 @@ void mainWindow::exporter(ExportersAvalaibleType t)
 void mainWindow::importer(ImportersAvalaibleType t)
 {
         QString fichier = QFileDialog::getOpenFileName(this,"Importer depuis");
-        if (m_Perlin3DObject) delete m_Perlin3DObject;
-        m_Perlin3DObject = Importers::Importer(fichier.toStdString(), (ImportersAvalaibleType)t);
+		if(!fichier.isEmpty())
+		{
+			if (m_Perlin3DObject) delete m_Perlin3DObject;
+			m_Perlin3DObject = Importers::Importer(fichier.toStdString(), (ImportersAvalaibleType)t);
 
-        // Mise a jour de l'interface
-        ui.sbSizeX->setValue(m_Perlin3DObject->Size.x);
-        ui.sbSizeY->setValue(m_Perlin3DObject->Size.y);
-        ui.sbSizeZ->setValue(m_Perlin3DObject->Size.z);
-        ui.hsSlideSelector->setMaximum(ui.sbSizeZ->value() - 1);
-        ui.hsSlideSelector->setValue(0);
-        ui.hsContraste->setValue(1);
-
+			// Mise a jour de l'interface
+			ui.sbSizeX->setValue(m_Perlin3DObject->Size.x);
+			ui.sbSizeY->setValue(m_Perlin3DObject->Size.y);
+			ui.sbSizeZ->setValue(m_Perlin3DObject->Size.z);
+			ui.hsSlideSelector->setMaximum(ui.sbSizeZ->value() - 1);
+			ui.hsSlideSelector->setValue(0);
+			ui.hsContraste->setValue(1);
+		}
 
         updateDisplay(0);
 
