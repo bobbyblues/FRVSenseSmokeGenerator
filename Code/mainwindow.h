@@ -14,6 +14,7 @@ private:
     Ui::mainForm ui;
     PerlinGenerator m_PerlinGenerator;
     Perlin3DObject * m_Perlin3DObject;
+    Importers * m_importers;
 
 
 public:
@@ -21,7 +22,6 @@ public:
 
 private:
     void exporter(ExportersAvalaibleType t);
-    void importer(ImportersAvalaibleType t);
     float getContrastedData(float data);
 
 signals:
@@ -46,8 +46,8 @@ public slots:
     void exporterPBRT() { exporter(PBRT_EXPORTER); };
     void exporterRAW() { exporter(RAW_EXPORTER); };
 
-    void importerPBRT() { importer(PBRT_IMPORTER); };
-    void importerVSQ() { importer(VSQ_IMPORTER); };
+    void importer();
+
 };
 
 #endif // MAINWINDOW_H

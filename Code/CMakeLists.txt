@@ -30,6 +30,8 @@ SET(PERLIN_SRCS
 	Importers/Importers.h
 	Importers/Importers.cpp
 
+	Importers/Importer.h
+
 	Importers/ImporterPBRT.cpp
 	Importers/ImporterPBRT.h
 
@@ -43,6 +45,7 @@ SET(PERLIN_SRCS
 QT4_WRAP_CPP(PERLIN_SRCS 
 	     PerlinGenerator.h
 	     mainwindow.h
+	     Importers/Importers.h
 	     )
 
 QT4_WRAP_UI(PERLIN_SRCS 

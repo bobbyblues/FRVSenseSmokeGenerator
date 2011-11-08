@@ -1,15 +1,16 @@
 #ifndef IMPORTERPBRT_H
 #define IMPORTERPBRT_H
 
-#include <string>
-#include "PerlinGenerator.h"
+#include "Importer.h"
 
-namespace Importers
-{
-        namespace PBRT
-        {
-                Perlin3DObject * Importer(const std::string& path);
-        }
-}
+class ImporterPBRT : public Importer{
+
+public:
+    ImporterPBRT():Importer("PBRT","*.pbrt"){}
+    virtual ~ImporterPBRT();
+
+    virtual Perlin3DObject * Import(const std::string& fullPath);
+
+};
 
 #endif // IMPORTERPBRT_H

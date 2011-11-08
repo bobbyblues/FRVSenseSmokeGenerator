@@ -1,5 +1,7 @@
 #include "mainwindow.h"
 
+#include "Importers/Importers.h"
+
 #include <QMenuBar>
 #include <QMenu>
 #include <QFileDialog>
@@ -20,19 +22,21 @@ mainWindow::mainWindow(QWidget *parent) :
 	QAction *actionExportPBRT = menuExporter->addAction("PBRT");
 	QAction *actionExportRAW = menuExporter->addAction("RAW");
 
-        QMenu *menuImporter = menuFichier->addMenu("&Importer");
-        QAction *actionImportPBRT = menuImporter->addAction("PBRT");
-        QAction *actionImportVSQ = menuImporter->addAction("VSQ");
+        m_importers = new Importers();
+
+        menuFichier->addMenu(m_importers);
+        QObject::connect(m_importers, SIGNAL(newObject()), this, SLOT(importer()));
+/*
+        QMenu *actionImport = menuFichier->addAction("&Importer");
 
         QAction *actionQuitter = menuFichier->addAction("&Quitter");
 
 	// Connect objects
 	// *** Menu
-	QObject::connect(actionQuitter, SIGNAL(triggered()), qApp, SLOT(quit()));
+        QObject::connect(actionQuitter, SIGNAL(triggered()), qApp, SLOT(quit()));
 	QObject::connect(actionExportPBRT, SIGNAL(triggered()), this, SLOT(exporterPBRT()));
 	QObject::connect(actionExportRAW, SIGNAL(triggered()), this, SLOT(exporterRAW()));
-        QObject::connect(actionImportPBRT, SIGNAL(triggered()), this, SLOT(importerPBRT()));
-        QObject::connect(actionImportVSQ, SIGNAL(triggered()), this, SLOT(importerVSQ()));
+        QObject::connect(actionImport, SIGNAL(triggered()), this, SLOT(importer()));*/
 
 	// *** Other objects
 	QObject::connect(ui.bGeneratePerlin, SIGNAL(clicked()), this, SLOT(launchGeneration()));
@@ -108,24 +112,24 @@ void mainWindow::exporter(ExportersAvalaibleType t)
         Exporters::Exporter(fichier.toStdString(), (ExportersAvalaibleType)t, *m_Perlin3DObject);
 }
 
-void mainWindow::importer(ImportersAvalaibleType t)
+void mainWindow::importer()
 {
-        QString fichier = QFileDialog::getOpenFileName(this,"Importer depuis");
-		if(!fichier.isEmpty())
-		{
-			if (m_Perlin3DObject) delete m_Perlin3DObject;
-			m_Perlin3DObject = Importers::Importer(fichier.toStdString(), (ImportersAvalaibleType)t);
 
-			// Mise a jour de l'interface
-			ui.sbSizeX->setValue(m_Perlin3DObject->Size.x);
-			ui.sbSizeY->setValue(m_Perlin3DObject->Size.y);
-			ui.sbSizeZ->setValue(m_Perlin3DObject->Size.z);
-			ui.hsSlideSelector->setMaximum(ui.sbSizeZ->value() - 1);
-			ui.hsSlideSelector->setValue(0);
-			ui.hsContraste->setValue(1);
-		}
+    Perlin3DObject *  temp = m_importers->getImportedObject();
+    if(temp){
+        if (m_Perlin3DObject) delete m_Perlin3DObject;
+        m_Perlin3DObject = temp;
 
-        updateDisplay(0);
+        // Mise a jour de l'interface
+        ui.sbSizeX->setValue(m_Perlin3DObject->Size.x);
+        ui.sbSizeY->setValue(m_Perlin3DObject->Size.y);
+        ui.sbSizeZ->setValue(m_Perlin3DObject->Size.z);
+        ui.hsSlideSelector->setMaximum(ui.sbSizeZ->value() - 1);
+        ui.hsSlideSelector->setValue(0);
+        ui.hsContraste->setValue(1);
+    }
+
+    updateDisplay(0);
 
 }
 

@@ -1,16 +1,14 @@
 #include "ImporterPBRT.h"
 #include <fstream>
-#include <sstream>
 #include <iostream>
 #include <vector>
+#include <sstream>
 
-namespace Importers
-{
-namespace PBRT
-{
+ImporterPBRT::~ImporterPBRT(){
 
+}
 
-Perlin3DObject * Importer(const std::string& path)
+Perlin3DObject * ImporterPBRT::Import(const std::string& path)
 {
     std::cout << "debut import" << std::endl;
     int nx, ny, nz;
@@ -22,15 +20,9 @@ Perlin3DObject * Importer(const std::string& path)
 
     // We read the file
     while (stream){
-        //char lineStr[1024];
-        //stream.getline(lineStr, 1024);
-        //std::string line(lineStr);
         std::string line = "";
         std::getline(stream,line);
-//        stream >> line;
         lines.push_back(line);
-
-        //std::cout << line << std::endl;
     }
 
     // We find the beginning of the volume
@@ -194,7 +186,4 @@ Perlin3DObject * Importer(const std::string& path)
                 obj->SetData(temp, x, y, z);
     }
             return obj;
-}
-
-}
 }

@@ -1,27 +1,49 @@
 #include "Importers.h"
+#include <QFileDialog>
 
-#include <iostream>
+Importers::Importers(){
+    this->setTitle("&Importer");
 
-// Includes des differents importers
-#include "ImporterPBRT.h"
-#include "ImporterVSQ.h"
+    initialize();
 
-namespace Importers
-{
-        Perlin3DObject * Importer(const std::string& fullpath, ImportersAvalaibleType typeImp)
-        {
-                switch(typeImp)
-                {
-                case PBRT_IMPORTER:
-                        return PBRT::Importer(fullpath);
-                        break;
-                case VSQ_IMPORTER:
-                        return VSQ::Importer(fullpath);
-                        break;
-                default:
-                        // TODO: Lever une exception
-                        break;
-                }
-				return NULL;
-        }
+    m_mapper = new QSignalMapper(this);
+    QObject::connect(m_mapper, SIGNAL(mapped(int)), this, SLOT(Import(int)));
+
+    for (int i = 0; i < m_importers.size(); ++i){
+        QAction * temp = this->addAction(m_importers[i]->getName().c_str());
+        m_mapper->setMapping(temp,i);
+        QObject::connect(temp, SIGNAL(triggered()), m_mapper, SLOT(map()));
+    }
+
 }
+
+Importers::~Importers(){
+    for(int i = 0; i < m_importers.size(); ++i)
+        delete m_importers[i];
+}
+
+void Importers::addImporter(Importer * imp){
+    m_importers.push_back(imp);
+}
+
+void Importers::Import(int i){
+    QString file = QFileDialog::getOpenFileName(this,"Importer depuis", ".",m_importers[i]->getValidFileExtensions().c_str());
+    if(!file.isEmpty()){
+        m_object = m_importers[i]->Import(file.toStdString());
+    }
+    else
+        m_object = NULL;
+
+    emit newObject();
+}
+
+
+
+
+
+
+
+
+
+
+
