@@ -21,7 +21,6 @@ public:
     explicit mainWindow(QWidget *parent = 0);
 
 private:
-    void exporter(ExportersAvalaibleType t);
     float getContrastedData(float data);
 
 signals:
@@ -43,8 +42,6 @@ public slots:
         if(v < std::pow(2.f, ui.sbNbOctave->value() -1))
             ui.dspStep->setValue(std::pow(2.f, ui.sbNbOctave->value() -1));
     }
-    void exporterPBRT() { exporter(PBRT_EXPORTER); };
-    void exporterRAW() { exporter(RAW_EXPORTER); };
 
     void importer();
 

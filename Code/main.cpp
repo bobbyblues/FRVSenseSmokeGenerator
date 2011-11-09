@@ -1,6 +1,6 @@
- #include <QApplication>
+#include <QApplication>
 #include <QPushButton>
- #include <QSpinBox>
+#include <QSpinBox>
 
 //Includes perso
 #include "mainwindow.h"
@@ -9,12 +9,19 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    // Création d'un widget qui servira de fenêtre
+    // Handlign of the language
+    /*QString locale = QLocale::system().name().section('_', 0, 0);
 
+    QTranslator translator;
+    translator.load(QString("FRVSenseSmokeGenerator_") + locale);
+    app.installTranslator(&translator);*/
+
+
+    // Creation of a widget acting as a window
     mainWindow w;
 
 
-    // Affichage de la fenêtre
+    // We display the window
     w.show();
 
     return app.exec();

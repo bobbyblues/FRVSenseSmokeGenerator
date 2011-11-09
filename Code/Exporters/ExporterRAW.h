@@ -1,15 +1,16 @@
 #ifndef EXPORTRAW_H
 #define EXPORTRAW_H
 
-#include <string>
-#include "PerlinGenerator.h"
+#include "Exporter.h"
 
-namespace Exporters
-{
-	namespace RAW
-	{
-		void Exporter(const std::string& path, const Perlin3DObject& obj);
-	}
-}
+class ExporterRAW : public Exporter{
+
+public:
+    ExporterRAW():Exporter("RAW","*.raw"){}
+    virtual ~ExporterRAW(){}
+
+    virtual void Export(const std::string& fullPath, const Perlin3DObject& obj);
+
+};
 
 #endif

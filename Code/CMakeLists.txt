@@ -19,6 +19,9 @@ SET(PERLIN_SRCS
     PerlinGenerator.h
 	mainwindow.cpp
 	mainwindow.h
+
+	Exporters/Exporter.h
+
 	Exporters/Exporters.h
 	Exporters/Exporters.cpp
 
@@ -46,6 +49,7 @@ QT4_WRAP_CPP(PERLIN_SRCS
 	     PerlinGenerator.h
 	     mainwindow.h
 	     Importers/Importers.h
+	     Exporters/Exporters.h
 	     )
 
 QT4_WRAP_UI(PERLIN_SRCS 

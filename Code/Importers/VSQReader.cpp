@@ -12,9 +12,8 @@ VSQReader::VSQReader(std::string path):
     // We check if the extension is correct
     std::string ext = path.substr(path.size()-4-1,4);
 
-	// Ouverture du ficher
+    // Ouverture du ficher
     readFile(0);
-    std::cout << "Opening of the file " << path.c_str() << std::endl;
     if (!strcmp(ext.c_str(),".vsq")){
         std::cout << "[Warning] Wrong file extension (.vsq needed)" << std::endl;
     }
@@ -23,15 +22,11 @@ VSQReader::VSQReader(std::string path):
         return;
     }
 	
-	// Lecture du header
+    // Lecture du header
     m_stream.read((char*)&m_cubeSize, sizeof(int));
     m_stream.read((char*)&m_nbFrame, sizeof(int));
 
-	// Affichage des informations
-	std::cout << " * Cube Size : " << m_cubeSize << std::endl;
-	std::cout << " * Nb Frame : " << m_nbFrame << std::endl;
-
-	// Recuperation de la premiere taile
+    // Recuperation de la premiere taile
     m_stream.seekg(0, std::ios::end);
     m_size.push_back(m_stream.tellg());
     m_stream.seekg(0);

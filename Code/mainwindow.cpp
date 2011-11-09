@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 
 #include "Importers/Importers.h"
+#include "Exporters/Exporters.h"
 
 #include <QMenuBar>
 #include <QMenu>
@@ -15,28 +16,15 @@ mainWindow::mainWindow(QWidget *parent) :
     
 	// Create menu
 	// *** Main section
-	QMenu* menuFichier = menuBar()->addMenu("&Fichier");
+        QMenu* menuFichier = menuBar()->addMenu(tr("&File"));
 	// *** Subsection
-	//  -- Fichier
-	QMenu *menuExporter = menuFichier->addMenu("&Exporter");
-	QAction *actionExportPBRT = menuExporter->addAction("PBRT");
-	QAction *actionExportRAW = menuExporter->addAction("RAW");
-
+        //  -- File
+        //   \--Import
         m_importers = new Importers();
-
         menuFichier->addMenu(m_importers);
         QObject::connect(m_importers, SIGNAL(newObject()), this, SLOT(importer()));
-/*
-        QMenu *actionImport = menuFichier->addAction("&Importer");
-
-        QAction *actionQuitter = menuFichier->addAction("&Quitter");
-
-	// Connect objects
-	// *** Menu
-        QObject::connect(actionQuitter, SIGNAL(triggered()), qApp, SLOT(quit()));
-	QObject::connect(actionExportPBRT, SIGNAL(triggered()), this, SLOT(exporterPBRT()));
-	QObject::connect(actionExportRAW, SIGNAL(triggered()), this, SLOT(exporterRAW()));
-        QObject::connect(actionImport, SIGNAL(triggered()), this, SLOT(importer()));*/
+        //   \--Export
+        menuFichier->addMenu(new Exporters(&m_PerlinGenerator));
 
 	// *** Other objects
 	QObject::connect(ui.bGeneratePerlin, SIGNAL(clicked()), this, SLOT(launchGeneration()));
@@ -77,7 +65,6 @@ void mainWindow::launchGeneration(){
 }
 
 void mainWindow::updateDisplay(int layer){
-    //std::cout << "Update Display :) " << layer << std::endl;
     if (m_Perlin3DObject){
 
         QImage image = QImage(m_Perlin3DObject->Size.x, m_Perlin3DObject->Size.y, QImage::Format_ARGB32);
@@ -90,7 +77,6 @@ void mainWindow::updateDisplay(int layer){
                 rgb[x] = qRgba(v, v, v, 255);
             }
 	}
-	//image = image.scaled(m_width,m_height, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 	ui.lPreview->setPixmap(QPixmap::fromImage(image, Qt::AutoColor));
         ui.lPreview->setAlignment(Qt::AlignCenter);
     }
@@ -106,12 +92,6 @@ float mainWindow::getContrastedData(float data){
     return std::max(std::min(data * contraste - (contraste / 2.f) + 0.5f,1.f),0.f);
 }
 
-void mainWindow::exporter(ExportersAvalaibleType t)
-{
-	QString fichier = QFileDialog::getSaveFileName(this,"Exporter vers");
-        Exporters::Exporter(fichier.toStdString(), (ExportersAvalaibleType)t, *m_Perlin3DObject);
-}
-
 void mainWindow::importer()
 {
 
@@ -120,7 +100,7 @@ void mainWindow::importer()
         if (m_Perlin3DObject) delete m_Perlin3DObject;
         m_Perlin3DObject = temp;
 
-        // Mise a jour de l'interface
+        // Interface Update
         ui.sbSizeX->setValue(m_Perlin3DObject->Size.x);
         ui.sbSizeY->setValue(m_Perlin3DObject->Size.y);
         ui.sbSizeZ->setValue(m_Perlin3DObject->Size.z);

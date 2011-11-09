@@ -2,7 +2,7 @@
 #include <QFileDialog>
 
 Importers::Importers(){
-    this->setTitle("&Importer");
+    this->setTitle(tr("&Import"));
 
     initialize();
 
@@ -27,7 +27,7 @@ void Importers::addImporter(Importer * imp){
 }
 
 void Importers::Import(int i){
-    QString file = QFileDialog::getOpenFileName(this,"Importer depuis", ".",m_importers[i]->getValidFileExtensions().c_str());
+    QString file = QFileDialog::getOpenFileName(this,tr("Importer from"), ".",m_importers[i]->getValidFileExtensions().c_str());
     if(!file.isEmpty()){
         m_object = m_importers[i]->Import(file.toStdString());
     }

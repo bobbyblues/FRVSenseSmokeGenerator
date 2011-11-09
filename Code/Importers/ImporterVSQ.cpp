@@ -19,9 +19,8 @@ Perlin3DObject * ImporterVSQ::Import(const std::string& path)
 {
 
     VSQReader reader(path);
-    std::cout << "import vsq done" << std::endl;
 
-    // Creation de la boite de dialogue
+    // Dialog box creation
     QDialog frameNbDialog;
     QVBoxLayout * layout = new QVBoxLayout;
     QSpinBox * sbNumber = new QSpinBox(&frameNbDialog);
@@ -32,10 +31,10 @@ Perlin3DObject * ImporterVSQ::Import(const std::string& path)
     frameNbDialog.setLayout(layout);
     QObject::connect(bOk, SIGNAL(clicked()), &frameNbDialog, SLOT(accept()));
 
-    // Affichage de celle-ci
+    // We display the box
     frameNbDialog.exec();
 
-    // Recuperation de la valeur.
+    // We get back the value
     int frameNumber = sbNumber->value();
 
     int cubeSize = reader.getSize();
@@ -52,7 +51,6 @@ Perlin3DObject * ImporterVSQ::Import(const std::string& path)
     for (int i = 0; i < cubeSize; ++i)
         for (int j = 0; j < cubeSize; ++j)
             for (int k = 0; k < cubeSize; ++k){
-                //std::cout << density[i * cubeSizeSq + j * cubeSize + k] << std::endl;
                 obj->SetData(density[i * cubeSizeSq + j * cubeSize + k],j,i,k);
             }
 

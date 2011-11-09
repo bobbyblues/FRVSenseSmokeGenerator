@@ -3,13 +3,7 @@
 #include <fstream>
 #include <iostream>
 
-namespace Exporters
-{
-namespace PBRT
-{
-
-
-void Exporter(const std::string& path, const Perlin3DObject& obj)
+void ExporterPBRT::Export(const std::string& path, const Perlin3DObject& obj)
 {
         std::ofstream pbrt(path.c_str());
     pbrt << "Volume \"volumegrid\" \"integer nx\" " << obj.Size.x
@@ -30,7 +24,4 @@ void Exporter(const std::string& path, const Perlin3DObject& obj)
     pbrt << "\n]"<< std::endl;
     pbrt.close();
     std::cout << "done" << std::endl;
-}
-
-}
 }

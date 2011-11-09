@@ -10,7 +10,6 @@ ImporterPBRT::~ImporterPBRT(){
 
 Perlin3DObject * ImporterPBRT::Import(const std::string& path)
 {
-    std::cout << "debut import" << std::endl;
     int nx, ny, nz;
     nx = ny = nz = 0;
 
